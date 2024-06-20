@@ -2,7 +2,7 @@ import express from 'express';
 import BookService from './BookService';
 
 const app = express();
-const port = 3000;  // Ensure the port is set to 3000
+const port = 3000;  
 const bookService = new BookService();
 
 app.use(express.json());
