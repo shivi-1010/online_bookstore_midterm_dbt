@@ -87,9 +87,7 @@
 ## SQL Code Block
 
 ```sql
-
--- Create Books Table
-```CREATE TABLE Books (
+CREATE TABLE Books (
     book_id SERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     genre VARCHAR(50) NOT NULL,
@@ -101,7 +99,7 @@
     format VARCHAR(20) NOT NULL CHECK (format IN ('physical', 'ebook', 'audiobook')),
     FOREIGN KEY (author_id) REFERENCES Authors(author_id),
     FOREIGN KEY (publisher_id) REFERENCES Publishers(publisher_id)
-);```
+);
 
 -- Insert Sample Data into Books Table
 ```INSERT INTO Books (title, genre, author_id, publisher_id, publication_date, price, rating, format) VALUES
@@ -227,24 +225,25 @@ LIMIT 10;```
 
 ### Steps
 1. Clone the repository:
-    bash
+    ```bash
+    git clone https://github.com/shivi-1010/online_bookstore_midterm_dbt.git
+    cd online_bookstore_midterm_dbt
     ```
-    git clone https://github.com/shivi-1010/online_bookstore_midterm_dbt.git```
-    ``` cd online_bookstore_midterm_dbt```
     
 2. Install dependencies:
-    
-    ```npm install -g typescript```
-    ```npm install typescript --save-dev```
-    ```npm init -y```
-    ```npx tsc --init```
-    ```npm install pg```
-    
+    ```bash
+    npm install -g typescript
+    npm install typescript --save-dev
+    npm init -y
+    npx tsc --init
+    npm install pg
+    ```
 
 3. Set up the database:
-    
-    ```psql -U postgres -d online_bookstore_midterm_dbt```
-    
+    ```bash
+    psql -U postgres -d online_bookstore_midterm_dbt
+    ```
+
 
 4. Initialize TypeScript:
     
