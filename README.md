@@ -481,7 +481,7 @@ Use Postman or another tool to insert a new book via your API:
 ```curl http://localhost:3000/books/1```
 
 	3.Check data:
-Verify the book was inserted by retrieving it using postman.
+Verify the book was inserted by retrieving it using postman using GET command..
 
 	4.Stop containers:
 ```docker-compose down```
