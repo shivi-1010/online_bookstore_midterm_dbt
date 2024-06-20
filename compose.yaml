@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: online_bookstore_midterm_dbt
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_NAME: online_bookstore_midterm_dbt
+      DB_USER: postgres
+      DB_PASSWORD: password
+    depends_on:
+      - db
+
+volumes:
+  db_data:
