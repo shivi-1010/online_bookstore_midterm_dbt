@@ -273,29 +273,138 @@ LIMIT 10;```
    ``` npm start```
     
 
-### Expected Output 3000
+-- Expected Output 3000
 This indicates that your Express server is up and running.
-
 When you run npm start, you should see:
+
 Server Running port on
-## Running CRUD Operat
-1. Test the CRUD operations:
-    ```ts-node src/test.ts```
-   ``` ts-node src/index.ts```
-    ```ts-node src/BookService.ts```
-    
-Verifying Data Persistence
-	1.	Start containers:
+## Running CRUD Operation
+### 1. Test the CRUD operations:
+    ``` ts-node src/test.ts ```
+   ``` ts-node src/index.ts ```
+    ``` ts-node src/BookService.ts ```
+
+2. Typescript Code :
+
+### 1) test.ts
+import BookService from "./BookService";
+
+// Initialize BookService
+const bookService = new BookService();
+
+async function testCRUDOperations() {
+  // Create a new book
+  const newBook = {
+    title: 'New Book',
+    author_id: 1,
+    publisher_id: 1,
+    genre: 'Fiction',
+    format: 'physical' as 'physical' | 'ebook' | 'audiobook',
+    price: 19.99,
+    publication_date: '2023-06-01',
+    rating: 4.5
+  };
+  const createdBook = await bookService.createBook(newBook);
+  console.log('Created Book:', createdBook);
+
+  // Read the book by ID
+  const bookId = createdBook.book_id;
+  if (bookId !== undefined) {
+    const readBook = await bookService.getBookById(bookId);
+    console.log('Read Book:', readBook);
+
+    if (readBook) {
+      // Update the book
+      readBook.price = 21.99;
+      const updatedBook = await bookService.updateBook(readBook);
+      console.log('Updated Book:', updatedBook);
+
+      // Delete the book
+      await bookService.deleteBook(bookId);
+      console.log('Deleted Book:', bookId);
+    }
+  }
+}
+
+testCRUDOperations().catch(console.error);
+
+ 2)index.ts
+import express from 'express';
+import BookService from './BookService';
+
+const app = express();
+const port = 3000;  
+const bookService = new BookService();
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Online Bookstore API");
+});
+
+app.post("/books", async (req, res) => {
+  try {
+    const newBook = await bookService.createBook(req.body);
+    res.status(201).json(newBook);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/books/:id", async (req, res) => {
+  try {
+    const book = await bookService.getBookById(parseInt(req.params.id, 10));
+    if (book) {
+      res.json(book);
+    } else {
+      res.status(404).json({ message: "Book not found" });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put("/books/:id", async (req, res) => {
+  try {
+    const book = { ...req.body, book_id: parseInt(req.params.id, 10) };
+    const updatedBook = await bookService.updateBook(book);
+    res.json(updatedBook);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete("/books/:id", async (req, res) => {
+  try {
+    await bookService.deleteBook(parseInt(req.params.id, 10));
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+
+### Verifying Data Persistence
+	1.Start containers:
 ```docker-compose up -d```
-	2.	Insert data:
+
+	2.Insert data:
 Use Postman or another tool to insert a new book via your API:
 ```curl http://localhost:3000/books/1```
-	3.	Check data:
-Verify the book was inserted by retrieving it:
-	4.	Stop containers:
+
+	3.Check data:
+Verify the book was inserted by retrieving it using postman.
+
+	4.Stop containers:
 ```docker-compose down```
-	5.	Restart containers:
+
+	5.Restart containers:
 ```docker-compose up -d```
-  6.	Verify data persistence:
+
+        6.Verify data persistence:
 Retrieve the book again to ensure it is still present:
 ```curl http://localhost:3000/books/1```
